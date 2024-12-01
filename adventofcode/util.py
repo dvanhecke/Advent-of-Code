@@ -123,7 +123,7 @@ def get_input(year: int, day: int) -> str:
     """
     Loads an input file into a string and returns it.
     """
-    input_file_path = os.path.join(INPUTS_ROOT, str(year), pad_day(day))
+    input_file_path = os.path.join(INPUTS_ROOT, pad_day(day))
     if not os.path.isfile(input_file_path) and not download_input(
         year, day, input_file_path
     ):
