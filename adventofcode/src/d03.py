@@ -4,8 +4,26 @@ Run it with the command `python -m adventofcode run_solution 3` from the project
 """
 
 from adventofcode.types import Solution
+import re
+
+
+def mul(a,b):
+    return a*b
 
 
 def run(data: str) -> Solution:
-    # not yet implemented!
-    return (None, None)
+    matches = re.findall(r"mul\([0-9]+,[0-9]+\)", data)
+    matches2 = re.findall(r"mul\([0-9]+,[0-9]+\)|do\(\)|don't\(\)", data)
+    results = [eval(instruction) for instruction in matches]
+    results2 = []
+    mul_enabled = True
+    for match in matches2:
+        if match == "do()":
+            mul_enabled = True
+            continue
+        elif match == "don't()":
+            mul_enabled = False
+            continue
+        if mul_enabled:
+            results2.append(eval(match))
+    return (sum(results), sum(results2))
