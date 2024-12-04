@@ -10,8 +10,6 @@ def count_xmas_x(grid):
     rows = len(grid) - 1
     cols = len(grid[0]) - 1
     count = 0
-    print(rows)
-    print(cols)
 
     for row in range(1, rows):
         for col in range(1, cols):
@@ -20,7 +18,6 @@ def count_xmas_x(grid):
                 arm2 = "".join([grid[row - 1][col + 1], grid[row][col], grid[row + 1][col - 1]])
                 if (arm1 == "MAS" or arm1 == "SAM") and (arm2 == "MAS" or arm2 == "SAM"):
                     count += 1
-                    print(f"{arm1=} {arm2=}")
 
     return count
 
