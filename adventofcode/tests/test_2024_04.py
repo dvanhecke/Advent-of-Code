@@ -7,5 +7,14 @@ from adventofcode.src.d04 import run
 
 
 def test_run() -> None:
-    # not yet implemented!
-    assert run("") == (None, None)
+    test_data = """MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX"""
+    assert run(test_data) == (18, 9)
