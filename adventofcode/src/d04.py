@@ -19,10 +19,9 @@ def count_xmas_x(grid):
     for row in range(1, rows):
         for col in range(1, cols):
             arm1 = "".join([grid[row + top_left[0]][col + top_left[1]], grid[row][col], grid[row + bottom_right[0]][col + bottom_right[1]]])
-            arm2 = "".join([grid[row + top_right[0]][col + top_right[1]], grid[row][col], grid[row + bottom_left[0]][col + bottom_left[0]]])
+            arm2 = "".join([grid[row + top_right[0]][col + top_right[1]], grid[row][col], grid[row + bottom_left[0]][col + bottom_left[1]]])
             if (arm1 == "MAS" or arm1 == "SAM") and (arm2 == "MAS" or arm2 == "SAM"):
                 count += 1
-
     return count
 
 
