@@ -11,13 +11,17 @@ def count_xmas_x(grid):
     cols = len(grid[0]) - 1
     count = 0
 
+    top_left = (-1, -1)
+    top_right = (-1, 1)
+    bottom_left = (1, -1)
+    bottom_right = (1, 1)
+
     for row in range(1, rows):
         for col in range(1, cols):
-            if grid[row][col] == "A":
-                arm1 = "".join([grid[row - 1][col - 1], grid[row][col], grid[row + 1][col + 1]])
-                arm2 = "".join([grid[row - 1][col + 1], grid[row][col], grid[row + 1][col - 1]])
-                if (arm1 == "MAS" or arm1 == "SAM") and (arm2 == "MAS" or arm2 == "SAM"):
-                    count += 1
+            arm1 = "".join([grid[row + top_left[0]][col + top_left[1]], grid[row][col], grid[row + bottom_right[0]][col + bottom_right[1]]])
+            arm2 = "".join([grid[row + top_right[0]][col + top_right[1]], grid[row][col], grid[row + bottom_left[0]][col + bottom_left[0]]])
+            if (arm1 == "MAS" or arm1 == "SAM") and (arm2 == "MAS" or arm2 == "SAM"):
+                count += 1
 
     return count
 
@@ -55,10 +59,8 @@ def run(data) -> Solution:
     # Iterate over each cell in the grid
     for r in range(rows):
         for c in range(cols):
-            # For each starting point (r, c), check all directions
-            if grid[r][c] == 'X':
-                for dr, dc in directions:
-                    if check_direction(r, c, dr, dc):
-                        xmas_count += 1
+            if grid[r][c] != 'X':
+                continue
+            xmas_count += sum([check_direction(r, c, dr, dc) for dr, dc in directions])
 
     return xmas_count, count_xmas_x(grid)
