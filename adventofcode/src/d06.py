@@ -1,5 +1,6 @@
 from adventofcode.types import Solution
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from tqdm import tqdm
 
 DIRECTIONS = {
     "up": (-1, 0),
@@ -91,12 +92,18 @@ def parallel_search_loops(grid, start_row, start_col):
     ]
 
     # Use ProcessPoolExecutor to parallelize
+    total_loop_points = 0
     with ProcessPoolExecutor() as executor:
-        results = executor.map(search_loops, tasks)
+        # Use submit to submit each task to the executor
+        futures = {executor.submit(search_loops, task): task for task in tasks}
 
-    # Sum results from all tasks
-    total_loop_points = sum(results)
-    print(f"Total loop points: {total_loop_points}")
+        # Initialize the progress bar
+        with tqdm(total=len(futures), desc="Checking infinite loops", unit="grid checks") as pbar:
+            for future in as_completed(futures):
+                loop_points = future.result()
+                total_loop_points += loop_points
+                pbar.update(1)  # Update the progress bar as tasks complete
+
     return total_loop_points
 
 def run(data: str) -> Solution:
