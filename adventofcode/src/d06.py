@@ -1,5 +1,8 @@
 from adventofcode.types import Solution
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from rich.table import Table
+from rich.live import Live
+import time
 from tqdm import tqdm
 
 DIRECTIONS = {
@@ -8,6 +11,46 @@ DIRECTIONS = {
     "down": (1, 0),
     "left": (0, -1)
 }
+
+DIRECTION_SYMBOLS = {
+    "up": "^",
+    "right": ">",
+    "down": "v",
+    "left": "<"
+}
+
+def get_zoomed_region(grid, bot_row, bot_col, size=50):
+    start_row = max(0, bot_row - size // 2)
+    start_col = max(0, bot_col - size // 2)
+    end_row = min(len(grid), bot_row + size // 2 + 1)
+    end_col = min(len(grid[0]), bot_col + size // 2 + 1)
+
+    # Ensure the region is exactly `size` x `size`
+    if end_row - start_row < size:
+        start_row = max(0, end_row - size)
+    if end_col - start_col < size:
+        start_col = max(0, end_col - size)
+
+    # Extract the region from the grid
+    zoomed_region = [row[start_col:end_col] for row in grid[start_row:end_row]]
+    return zoomed_region
+
+def visualize_grid_in_cli(grid, bot_row, bot_col):
+    zoomed_region = get_zoomed_region(grid, bot_row, bot_col)
+    table = Table(title="Guard patrolling the lab", box=None, pad_edge=False)
+    for row in zoomed_region:
+        cells = []
+        for col, cell in enumerate(row):
+            if cell == ".":
+                cells.append(" ")  # Free cell
+            elif cell == "#":
+                cells.append("[bold red]󰝤[/]")  # Obstacle
+            elif cell in DIRECTION_SYMBOLS.values():
+                cells.append(f"[green]{cell}[/]")  # Bot
+            elif cell == "X":
+                cells.append("[yellow]X[/]")  # Trail
+        table.add_row(*cells)
+    return table
 
 def move(grid, guard_row, guard_col, direction):
     offsets = DIRECTIONS[direction]
@@ -23,7 +66,7 @@ def move(grid, guard_row, guard_col, direction):
             new_col = guard_col + offsets[1]
         # Mark the current position as visited
         grid[guard_row][guard_col] = "X"
-        grid[new_row][new_col] = "^"
+        grid[new_row][new_col] = DIRECTION_SYMBOLS[direction]
         return new_row, new_col, direction
     return None  # No valid move
 
@@ -117,12 +160,17 @@ def run(data: str) -> Solution:
     row, col = start_row, start_col
     run_simulation = True
 
-    while run_simulation:
-        coords = move(grid_, row, col, direction)
-        if coords is None:
-            run_simulation = False
-            continue
-        row, col, direction = coords
+    with Live(visualize_grid_in_cli(grid_, row, col), refresh_per_second=1000) as live:
+        while run_simulation:
+            coords = move(grid_, row, col, direction)
+            if coords is None:
+                run_simulation = False  # Exit the loop when no valid move is possible
+                continue
+            row, col, direction = coords
+            # Visualize the zoomed-in grid
+            current_table = visualize_grid_in_cli(grid_, row, col)
+            live.update(current_table)
+
 
     # Count visited positions
     count = sum(line.count("X") for line in grid) + 1  # Add 1 for the starting position

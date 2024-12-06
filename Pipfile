@@ -10,7 +10,7 @@ black = "*"
 [packages]
 pytest = "*"
 requests = "*"
-tqdm = "*"
+rich = "*"
 
 [requires]
 python_version = "3.12"
