@@ -2,7 +2,6 @@ from adventofcode.types import Solution
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from rich.table import Table
 from rich.live import Live
-import time
 from tqdm import tqdm
 
 DIRECTIONS = {
