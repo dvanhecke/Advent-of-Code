@@ -5,8 +5,9 @@ Run it with the command `python -m adventofcode run_solution 7` from the project
 
 from adventofcode.types import Solution
 from itertools import product
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
-def find_operations(numbers, target, use_concat=False):
+def find_operations(numbers, target, idx, use_concat=False):
     n = len(numbers)
     if n < 2:
         return []
@@ -37,13 +38,33 @@ def find_operations(numbers, target, use_concat=False):
             state = True
             break
 
-    return state
+    return state, use_concat, idx
+
+
+def run_parallel_tasks(numbers, targets):
+    with ProcessPoolExecutor() as executor:
+        tasks = []
+
+        for idx, target in enumerate(targets):
+            tasks.append(executor.submit(find_operations, numbers[idx], target, idx))
+            tasks.append(executor.submit(find_operations, numbers[idx], target, idx, True))
+
+        # Wait for all processes to finish
+        results = [[0, 0] for _ in range(len(targets))]  # Initialize results for all targets
+        
+        for task in as_completed(tasks):
+            res, concat, idx = task.result()
+            if concat:
+                results[idx][1] = res
+            else:
+                results[idx][0] = res
+
+    return results
 
 def run(data: str) -> Solution:
     results = [int(line.split(": ")[0]) for line in data.split("\n")]
     values = [[int(char) for char in line.split(": ")[1].split(" ")] for line in data.split("\n")]
-    calibration = [find_operations(values[idx], res) for idx, res in enumerate(results)]
-    calibration2 = [find_operations(values[idx], res, True) for idx, res in enumerate(results)]
-    final_sum = sum([res for idx, res in enumerate(results) if calibration[idx]])
-    final_sum2 = sum([res for idx, res in enumerate(results) if calibration2[idx]])
-    return (final_sum, final_sum2)
+    calibrations = run_parallel_tasks(values, results)
+    with_concat = sum([res for idx, res in enumerate(results) if calibrations[idx][1]])
+    without_concat = sum([res for idx, res in enumerate(results) if calibrations[idx][0]])
+    return (without_concat, with_concat)
