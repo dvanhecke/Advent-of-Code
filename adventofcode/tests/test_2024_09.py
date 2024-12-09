@@ -7,5 +7,5 @@ from adventofcode.src.d09 import run
 
 
 def test_run() -> None:
-    # not yet implemented!
-    assert run("") == (None, None)
+    test_data = "2333133121414131402"
+    assert run(test_data) == (1928, 2858)
