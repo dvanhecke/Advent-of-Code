@@ -7,5 +7,12 @@ from adventofcode.src.d10 import run
 
 
 def test_run() -> None:
-    # not yet implemented!
-    assert run("") == (None, None)
+    test_data = """89010123
+78121874
+87430965
+96549874
+45678903
+32019012
+01329801
+10456732"""
+    assert run(test_data) == (36, 81)
