@@ -4,90 +4,93 @@ Run it with the command `python -m adventofcode run_solution 9` from the project
 """
 
 from adventofcode.types import Solution
-from tqdm import tqdm
+import sys
+from heapq import heapify, heappop, heappush
+from itertools import repeat
 
-def parse_disk(disk):
-    disk_ = []
-    file_counter = 0
-    for idx, val in enumerate(disk):
-        if idx % 2 == 0:
-            for _ in range(int(val)):
-                disk_.append(str(file_counter))
-            file_counter += 1
+def part1(arr):
+    disk = []
+    is_file = True
+    file_id = 0
+    for size in arr:
+        if is_file:
+            disk.extend(repeat(file_id, size))
+            file_id += 1
         else:
-            for _ in range(int(val)):
-                disk_.append(".")
-    return disk_
+            disk.extend(repeat(-1, size))
+        is_file = not is_file
 
-def sort_disk(disk):
-    original_disk = disk
-    last_non_dot_index = len(original_disk) - 1
+    i, j = 0, len(disk) - 1
 
-    for idx, char in enumerate(original_disk):
-        if idx >= last_non_dot_index:  # If the index reaches or passes the last non-dot index, break
-                    break
-        if char != ".":
-            continue
-        while last_non_dot_index > idx and original_disk[last_non_dot_index] == ".":
-            last_non_dot_index -= 1
-        if last_non_dot_index > idx:
-            original_disk[idx], original_disk[last_non_dot_index] = (
-                original_disk[last_non_dot_index],
-                original_disk[idx],
-            )
-    return original_disk
-
-def calculate_checksum(disk):
-    sum = 0
-    for idx, val in enumerate(disk):
-        if val == ".":
-            continue
-        sum += (int(idx) * int(val))
-
-    return sum
-
-def mv_file(file, disk):
-    size_map = {}
-    free_space_map = []
-    free_space_index = None
-    free_space_size = 0
-
-    for idx, char in enumerate(disk):
-        if char == ".":
-            free_space_index = idx if free_space_index is None else free_space_index
-            free_space_size +=1
-            continue
-        if free_space_index is not None:
-            free_space_map.append((free_space_index, free_space_size))
-            free_space_index = None
-            free_space_size = 0
-
-        if size_map.get(char) is None:
-            size_map[char] = (disk.count(char), idx)
-
-    for (idx, space) in free_space_map:
-        if space >= size_map[file][0] and idx < size_map[file][1]:
-            for i in range (idx, idx+size_map[file][0]):
-                disk[i] = file
-            for i in range(size_map[file][1], size_map[file][1]+size_map[file][0]):
-                disk[i] = "."
+    while True:
+        while disk[i] != -1:
+            i += 1
+        while disk[j] == -1:
+            j -= 1
+        if not i < j:
             break
+        disk[i], disk[j] = disk[j], disk[i]
+        i += 1
+        j -= 1
 
-def defragment_disk(disk):
-    disk_ = list(set(disk) - {"."})
-    disk_.sort()
-    for file in tqdm(disk_[::-1], desc="compacting", unit="file"):
-        mv_file(file, disk)
-    
-    return disk
+    checksum = 0
+
+    for file_position, file_id in enumerate(disk):
+        if file_id != -1:
+            checksum += file_position * file_id
+
+    return checksum
+
+def part2(arr):
+    MAX_FREE_SIZE = 10
+
+    files = []
+    frees = [[] for _ in range(MAX_FREE_SIZE)]
+
+    is_file = True
+    file_id = 0
+    position = 0
+    for size in arr:
+        if is_file:
+            files.append((file_id, position, size))
+            file_id += 1
+        else:
+            frees[size].append(position)
+        is_file = not is_file
+        position += int(size)
+
+    for i in range(MAX_FREE_SIZE):
+        frees[i].append(sys.maxsize)  # sentinel, make frees[i] always non-empty
+        heapify(frees[i])
+
+    compacted: list[tuple[int, int, int]] = []
+
+    for file_id, file_position, file_size in reversed(files):
+        first_fit: int | None = None
+
+        for free_size in range(file_size, MAX_FREE_SIZE):
+            if frees[free_size][0] < file_position and (first_fit is None or frees[free_size][0] < frees[first_fit][0]):
+                first_fit = free_size
+
+        if first_fit is None:
+            compacted.append((file_id, file_position, file_size))
+            continue
+
+        free_position = heappop(frees[first_fit])
+        size_diff = first_fit - file_size
+        compacted.append((file_id, free_position, file_size))
+        heappush(frees[size_diff], free_position + file_size)
+
+    checksum = 0
+
+    for file_id, file_position, file_size in compacted:
+        for position in range(file_position, file_position + file_size):
+            checksum += position * file_id
+
+    return checksum
+
 
 def run(data: str) -> Solution:
-    disk = "".join([line for line in data.split("\n")])
-    disk2 = "".join([line for line in data.split("\n")])
-    disk = parse_disk(disk)
-    disk2 = parse_disk(disk2)
-    disk = sort_disk(disk)
-    disk2 = defragment_disk(disk2)
-    sum = calculate_checksum(disk)
-    sum2 = calculate_checksum(disk2)
-    return (sum, sum2)
+    disk = part1([int(j) for j in "".join([i for i in data.splitlines()])])
+    disk2 = part2([int(j) for j in "".join([i for i in data.splitlines()])])
+    return disk, disk2
