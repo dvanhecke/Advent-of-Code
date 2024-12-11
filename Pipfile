@@ -9,7 +9,11 @@ black = "*"
 
 [packages]
 pytest = "*"
+pytest-cov = "*"
+pytest-benchmark = "*"
 requests = "*"
+rich = "*"
+
 
 [requires]
 python_version = "3.12"
