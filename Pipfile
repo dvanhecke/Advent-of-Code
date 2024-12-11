@@ -11,6 +11,7 @@ black = "*"
 pytest = "*"
 requests = "*"
 rich = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.12"
