@@ -13,7 +13,8 @@ pytest-cov = "*"
 pytest-benchmark = "*"
 requests = "*"
 rich = "*"
-
+tqdm = "*"
+matplotlib = "*"
 
 [requires]
 python_version = "3.12"
