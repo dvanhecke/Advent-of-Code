@@ -6,7 +6,7 @@ Run tests from project root with `PYTHONPATH=$(pwd) py.test`.
 from adventofcode.src.d05 import run
 
 
-def test_run() -> None:
+def test_run(benchmark) -> None:
     test_data = """47|53
 97|13
 97|61
@@ -35,4 +35,4 @@ def test_run() -> None:
 75,97,47,61,53
 61,13,29
 97,13,75,29,47"""
-    assert run(test_data) == (143, 123)
+    assert benchmark(run, test_data) == (143, 123)

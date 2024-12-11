@@ -6,6 +6,6 @@ Run tests from project root with `PYTHONPATH=$(pwd) py.test`.
 from adventofcode.src.d25 import run
 
 
-def test_run() -> None:
-    # not yet implemented!
-    assert run("") == (None, None)
+def test_run(benchmark) -> None:
+    test_data = ""
+    assert benchmark(run, test_data) == (None, None)

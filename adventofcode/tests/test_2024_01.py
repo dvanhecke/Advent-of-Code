@@ -6,11 +6,11 @@ Run tests from project root with `PYTHONPATH=$(pwd) py.test`.
 from adventofcode.src.d01 import run
 
 
-def test_run() -> None:
+def test_run(benchmark) -> None:
     test_input = """3   4
 4   3
 2   5
 1   3
 3   9
 3   3"""
-    assert run(test_input) == (11, 31)
+    assert benchmark(run, test_input) == (11, 31)
