@@ -13,11 +13,7 @@ pytest-cov = "*"
 pytest-benchmark = "*"
 requests = "*"
 rich = "*"
-<<<<<<< HEAD
 tqdm = "*"
-=======
-pytest-cov = "*"
->>>>>>> 716adfd (add coverage checking)
 
 [requires]
 python_version = "3.12"
