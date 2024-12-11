@@ -14,6 +14,7 @@ USER_SESSION_ID_FILE_PATH = os.path.join(PROJECT_ROOT, ".USER_SESSION_ID")
 
 COMMAND_RUN_SOLUTION = "run_solution"
 COMMAND_MAKE_NEW_YEAR = "run_make_new_year"
+COMMAND_RUN_PROFILER = "run_profiler"
 
 DAY_PREFIX = "d"
 
