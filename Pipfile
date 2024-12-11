@@ -15,6 +15,7 @@ requests = "*"
 rich = "*"
 tqdm = "*"
 matplotlib = "*"
+pygal = "*"
 
 [requires]
 python_version = "3.12"
