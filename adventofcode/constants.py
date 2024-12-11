@@ -35,11 +35,12 @@ TEST_FILE_TEMPLATE = f'''"""
 Test for year {{year}}, day {{day}} solution.
 Run tests from project root with `PYTHONPATH=$(pwd) py.test`.
 """
+import pytest
 from adventofcode.{SRC_DIR_NAME}.{DAY_PREFIX}{{zero_padded_day}} import run
 
 def test_run() -> None:
   # not yet implemented!
-  assert run("") == (None, None)
+  assert benchmark(run, test_data) == (None, None)
 '''
 
 # for highlighting sections of printed text
