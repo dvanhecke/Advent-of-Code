@@ -36,5 +36,4 @@ def part1(stones):
 
 def run(data: str) -> Solution:
     stones = [int(element) for element in "".join(data.splitlines()).split(" ")]
-    print(stones)
     return (part1(stones), part2(stones))
