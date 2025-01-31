@@ -38,21 +38,20 @@ jobs:
           pipenv install --dev
           pipenv install
 
-      - name: Run Tests with Coverage
-
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v5
-        run: |
-          pipenv run pytest --cov-branch --cov-report=xml --cov=adventofcode --cov-fail-under=80
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: dvanhecke/Advent-of-Code
+        run: |
+          pipenv run pytest --cov-branch --cov-report=xml --cov=adventofcode --cov-fail-under=80
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
-        run: 
-          pipenv run pytest --cov --junitxml=junit.xml -o junit_family=legacy
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: dvanhecke/Advent-of-Code
+        run: |
+          pipenv run pytest --cov-branch --cov-report=xml --cov=adventofcode --cov-fail-under=80
+          pipenv run pytest --cov --junitxml=junit.xml -o junit_family=legacy
