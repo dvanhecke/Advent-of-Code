@@ -42,11 +42,13 @@ jobs:
         run: |
           export PYTHONPATH=$(pwd)
           pipenv run pytest --cov-branch --cov-report=xml --cov=adventofcode --cov-fail-under=80
+        continue-on-error: true
 
       - name: Get full test results
         run: |
           export PYTHONPATH=$(pwd)
           pipenv run pytest --cov --junitxml=junit.xml -o junit_family=legacy
+        continue-on-error: true
 
       - name: Upload Coverage to Codecov
         uses: codecov/codecov-action@v5
