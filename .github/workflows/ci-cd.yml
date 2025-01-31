@@ -36,6 +36,7 @@ jobs:
         run: |
           sudo apt install pipenv python3 -y
           pipenv install --dev
+          pipenv install
 
       - name: Run Tests with Coverage
         run: |
