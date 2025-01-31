@@ -17,10 +17,12 @@ BOX_SYMBOL = "O"
 WALL_SYMBOL = "#"
 BOT_SYMBOL = "@"
 
+
 def parse_input(data) -> (list, list):
     grid = [[char for char in line] for line in data.split("\n\n")[0].splitlines()]
     moves = [char for char in data.split("\n\n")[1].replace("\n", "")]
     return grid, moves
+
 
 def calc_sum(grid):
     total = 0
@@ -52,7 +54,10 @@ def move_bot(grid, moves):
         if _grid[row + dr][col + dc] == BOX_SYMBOL:
             chain_positions = [(row + dr, col + dc)]
             while True:
-                next_r, next_c = chain_positions[-1][0] + dr, chain_positions[-1][1] + dc
+                next_r, next_c = (
+                    chain_positions[-1][0] + dr,
+                    chain_positions[-1][1] + dc,
+                )
                 if _grid[next_r][next_c] == WALL_SYMBOL:
                     valid_chain = False
                     break
@@ -66,12 +71,12 @@ def move_bot(grid, moves):
             chain_positions.reverse()
             for r_box, c_box in chain_positions:
                 _grid[r_box + dr][c_box + dc] = BOX_SYMBOL
-                _grid[r_box][c_box] = '.'
-            _grid[row][col] = '.'
-            _grid[row +dr][col + dc] = BOT_SYMBOL
+                _grid[r_box][c_box] = "."
+            _grid[row][col] = "."
+            _grid[row + dr][col + dc] = BOT_SYMBOL
             row, col = row + dr, col + dc
         else:
-            _grid[row][col] = '.'
+            _grid[row][col] = "."
             _grid[row + dr][col + dc] = BOT_SYMBOL
             row, col = row + dr, col + dc
 
@@ -82,86 +87,86 @@ def move_bot2(grid, bot_moves):
     m, n = len(grid), len(grid[0])
     for i in range(m):
         for j in reversed(range(n)):
-            if grid[i][j] == '#':
-                grid[i].insert(j, '#')
-            if grid[i][j] == '.':
-                grid[i].insert(j, '.')
-            if grid[i][j] == '@':
-                robot = (i, j*2)
-                grid[i][j:j+1] = ['.', '.']
-            if grid[i][j] == 'O':
-                grid[i][j:j+1] = ['[', ']']
+            if grid[i][j] == "#":
+                grid[i].insert(j, "#")
+            if grid[i][j] == ".":
+                grid[i].insert(j, ".")
+            if grid[i][j] == "@":
+                robot = (i, j * 2)
+                grid[i][j : j + 1] = [".", "."]
+            if grid[i][j] == "O":
+                grid[i][j : j + 1] = ["[", "]"]
 
     for d in bot_moves[:]:
         i, j = robot
-        
-        if d == '<':
-            k = j-1
-            while grid[i][k] == ']':
+
+        if d == "<":
+            k = j - 1
+            while grid[i][k] == "]":
                 k -= 2
-            if grid[i][k] == '.':
+            if grid[i][k] == ".":
                 for l in range(k, j):
-                    grid[i][l] = grid[i][l+1]
-                robot = (i, j-1)
+                    grid[i][l] = grid[i][l + 1]
+                robot = (i, j - 1)
 
-        elif d == '>':
-            k = j+1
-            while grid[i][k] == '[':
+        elif d == ">":
+            k = j + 1
+            while grid[i][k] == "[":
                 k += 2
-            if grid[i][k] == '.':
-                for l in reversed(range(j+1, k+1)):
-                    grid[i][l] = grid[i][l-1]
-                robot = (i, j+1)
+            if grid[i][k] == ".":
+                for l in reversed(range(j + 1, k + 1)):
+                    grid[i][l] = grid[i][l - 1]
+                robot = (i, j + 1)
 
-        elif d == '^':
-            queue = {(i-1, j)}
+        elif d == "^":
+            queue = {(i - 1, j)}
             rows = defaultdict(set)
             while queue:
                 x, y = queue.pop()
                 match grid[x][y]:
-                    case '#':
+                    case "#":
                         break
-                    case ']':
-                        rows[x] |= {y-1, y}
-                        queue |= {(x-1, y), (x-1, y-1)}
-                    case '[':
-                        rows[x] |= {y, y+1}
-                        queue |= {(x-1, y), (x-1, y+1)}
-                    case '.':
+                    case "]":
+                        rows[x] |= {y - 1, y}
+                        queue |= {(x - 1, y), (x - 1, y - 1)}
+                    case "[":
+                        rows[x] |= {y, y + 1}
+                        queue |= {(x - 1, y), (x - 1, y + 1)}
+                    case ".":
                         rows[x].add(y)
             else:
                 for x in sorted(rows):
                     for y in rows[x]:
-                        grid[x][y] = grid[x+1][y] if y in rows[x+1] else '.'
-                robot = (i-1, j)
+                        grid[x][y] = grid[x + 1][y] if y in rows[x + 1] else "."
+                robot = (i - 1, j)
 
-        elif d== 'v':
-            queue = {(i+1, j)}
+        elif d == "v":
+            queue = {(i + 1, j)}
             rows = defaultdict(set)
             while queue:
                 x, y = queue.pop()
                 match grid[x][y]:
-                    case '#':
+                    case "#":
                         break
-                    case ']':
-                        rows[x] |= {y-1, y}
-                        queue |= {(x+1, y), (x+1, y-1)}
-                    case '[':
-                        rows[x] |= {y, y+1}
-                        queue |= {(x+1, y), (x+1, y+1)}
-                    case '.':
+                    case "]":
+                        rows[x] |= {y - 1, y}
+                        queue |= {(x + 1, y), (x + 1, y - 1)}
+                    case "[":
+                        rows[x] |= {y, y + 1}
+                        queue |= {(x + 1, y), (x + 1, y + 1)}
+                    case ".":
                         rows[x].add(y)
             else:
                 for x in sorted(rows, reverse=True):
                     for y in rows[x]:
-                        grid[x][y] = grid[x-1][y] if y in rows[x-1] else '.'
-                robot = (i+1, j)
+                        grid[x][y] = grid[x - 1][y] if y in rows[x - 1] else "."
+                robot = (i + 1, j)
 
     total = 0
     for i in range(m):
-        for j in range(n*2):
-            if grid[i][j] == '[':
-                total += 100*i + j
+        for j in range(n * 2):
+            if grid[i][j] == "[":
+                total += 100 * i + j
 
     return total
 

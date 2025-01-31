@@ -4,19 +4,10 @@ from rich.table import Table
 from rich.live import Live
 from tqdm import tqdm
 
-DIRECTIONS = {
-    "up": (-1, 0),
-    "right": (0, 1),
-    "down": (1, 0),
-    "left": (0, -1)
-}
+DIRECTIONS = {"up": (-1, 0), "right": (0, 1), "down": (1, 0), "left": (0, -1)}
 
-DIRECTION_SYMBOLS = {
-    "up": "^",
-    "right": ">",
-    "down": "v",
-    "left": "<"
-}
+DIRECTION_SYMBOLS = {"up": "^", "right": ">", "down": "v", "left": "<"}
+
 
 def get_zoomed_region(grid, bot_row, bot_col, size=50):
     start_row = max(0, bot_row - size // 2)
@@ -33,6 +24,7 @@ def get_zoomed_region(grid, bot_row, bot_col, size=50):
     # Extract the region from the grid
     zoomed_region = [row[start_col:end_col] for row in grid[start_row:end_row]]
     return zoomed_region
+
 
 def visualize_grid_in_cli(grid, bot_row, bot_col):
     zoomed_region = get_zoomed_region(grid, bot_row, bot_col)
@@ -51,11 +43,12 @@ def visualize_grid_in_cli(grid, bot_row, bot_col):
         table.add_row(*cells)
     return table
 
+
 def move(grid, guard_row, guard_col, direction):
     offsets = DIRECTIONS[direction]
     new_row = guard_row + offsets[0]
     new_col = guard_col + offsets[1]
-    
+
     # Check if the new position is within bounds
     if 0 <= new_row < len(grid) and 0 <= new_col < len(grid[0]):
         while grid[new_row][new_col] == "#":  # Obstacle encountered
@@ -69,6 +62,7 @@ def move(grid, guard_row, guard_col, direction):
         return new_row, new_col, direction
     return None  # No valid move
 
+
 def rotate(direction):
     # Rotate clockwise in the direction list
     keys = list(DIRECTIONS.keys())
@@ -77,12 +71,14 @@ def rotate(direction):
         return keys[0]
     return keys[key_index + 1]
 
+
 def find_guard(grid):
     for row, line in enumerate(grid):
         for col, element in enumerate(line):
             if element == "^":  # Find the starting position of the guard
                 return row, col
     return None
+
 
 def search_loops(params):
     """
@@ -121,6 +117,7 @@ def search_loops(params):
     grid[row_][col_] = "."
     return loop_points
 
+
 # Main function to parallelize across grid cells
 def parallel_search_loops(grid, start_row, start_col):
     num_rows = len(grid)
@@ -140,13 +137,16 @@ def parallel_search_loops(grid, start_row, start_col):
         futures = {executor.submit(search_loops, task): task for task in tasks}
 
         # Initialize the progress bar
-        with tqdm(total=len(futures), desc="Checking infinite loops", unit="grid checks") as pbar:
+        with tqdm(
+            total=len(futures), desc="Checking infinite loops", unit="grid checks"
+        ) as pbar:
             for future in as_completed(futures):
                 loop_points = future.result()
                 total_loop_points += loop_points
                 pbar.update(1)  # Update the progress bar as tasks complete
 
     return total_loop_points
+
 
 def run(data: str) -> Solution:
     grid = [list(line) for line in data.split("\n")]
@@ -169,7 +169,6 @@ def run(data: str) -> Solution:
             # Visualize the zoomed-in grid
             current_table = visualize_grid_in_cli(grid_, row, col)
             live.update(current_table)
-
 
     # Count visited positions
     count = sum(line.count("X") for line in grid) + 1  # Add 1 for the starting position

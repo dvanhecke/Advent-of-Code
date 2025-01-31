@@ -14,7 +14,9 @@ def run_profiler(args) -> None:
     solution_module_path = f"adventofcode.src.{get_day_id(day)}"
     solution_module = importlib.import_module(solution_module_path)
     data = get_input(YEAR, day)
-    print(f"Running profiler on the solution for year {highlight(YEAR)}, day {highlight(day)}.")
+    print(
+        f"Running profiler on the solution for year {highlight(YEAR)}, day {highlight(day)}."
+    )
     print()
     profiler = cProfile.Profile()
 
@@ -32,5 +34,4 @@ def run_profiler(args) -> None:
     print("Answer to puzzle 1:", highlight(result[0], color="g"))
     print("Answer to puzzle 2:", highlight(result[1], color="g"))
     stats = pstats.Stats(profiler)
-    stats.sort_stats('time').print_stats(10)  # Adjust the number to show more/less
-
+    stats.sort_stats("time").print_stats(10)  # Adjust the number to show more/less

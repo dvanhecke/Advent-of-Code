@@ -1,0 +1,56 @@
+on:
+  push:
+    branches-ignore:
+      - main
+      - development
+  pull_request:
+    branches:
+      - development
+      - main
+  workflow_dispatch:
+  release:
+    types: [created]
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt install pipenv python3 -y
+          pipenv install --dev
+
+      - name: Run Black
+        run: pipenv run black --check .
+
+  test-and-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt install pipenv python3 -y
+          pipenv install --dev
+
+      - name: Run Tests with Coverage
+        run: |
+          pipenv run pytest --cov-branch --cov-report=xml --cov=adventofcode --cov-fail-under=80
+          pipenv run pytest --cov --junitxml=junit.xml -o junit_family=legacy
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: dvanhecke/Advent-of-Code
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: dvanhecke/Advent-of-Code

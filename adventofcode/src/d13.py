@@ -19,9 +19,36 @@ def parse_input(data: str):
     parsed_data = []
     for i in range(0, len(split), 4):
         dictionary = dict()
-        dictionary["A"] = tuple(map(int, split[i].removeprefix("Button A: ").replace("X+", "").replace("Y+", "").split(", ")))
-        dictionary["B"] = tuple(map(int, split[i + 1].removeprefix("Button B: ").replace("X+", "").replace("Y+", "").split(", ")))
-        dictionary["P"] = tuple(map(int, split[i + 2].removeprefix("Prize: ").replace("X=", "").replace("Y=", "").split(", ")))
+        dictionary["A"] = tuple(
+            map(
+                int,
+                split[i]
+                .removeprefix("Button A: ")
+                .replace("X+", "")
+                .replace("Y+", "")
+                .split(", "),
+            )
+        )
+        dictionary["B"] = tuple(
+            map(
+                int,
+                split[i + 1]
+                .removeprefix("Button B: ")
+                .replace("X+", "")
+                .replace("Y+", "")
+                .split(", "),
+            )
+        )
+        dictionary["P"] = tuple(
+            map(
+                int,
+                split[i + 2]
+                .removeprefix("Prize: ")
+                .replace("X=", "")
+                .replace("Y=", "")
+                .split(", "),
+            )
+        )
         parsed_data.append(dictionary)
     return parsed_data
 
@@ -30,7 +57,7 @@ def find_min_cost(A, B, P, max_presses=100):
     A_x, A_y = A
     B_x, B_y = B
     P_x, P_y = P
-    
+
     min_cost = float("inf")
     found_solution = False
 
@@ -41,7 +68,7 @@ def find_min_cost(A, B, P, max_presses=100):
                 cost = 3 * a + b
                 min_cost = min(min_cost, cost)
                 found_solution = True
-    
+
     return min_cost if found_solution else None
 
 
@@ -52,7 +79,7 @@ def part1(machines):
         A = machine["A"]
         B = machine["B"]
         C = machine["P"]
-        
+
         cost = find_min_cost(A, B, C)
         if cost is not None:
             total_cost += cost
@@ -63,16 +90,17 @@ def part2(puzzle_input):
     total = 0
     tolerance = 0.0001
     offset = 10_000_000_000_000
-    for machine in puzzle_input.split('\n\n'):
-        ax, ay, bx, by, x, y = map(int, re.findall(r'(\d+)', machine))
+    for machine in puzzle_input.split("\n\n"):
+        ax, ay, bx, by, x, y = map(int, re.findall(r"(\d+)", machine))
         x += offset
         y += offset
-        A = (bx*y - by*x) / (bx*ay - by*ax)
-        B = (x-ax*A) / bx
+        A = (bx * y - by * x) / (bx * ay - by * ax)
+        B = (x - ax * A) / bx
         if abs(A - round(A)) < tolerance and abs(B - round(B)) < tolerance:
-            total += 3*A + B
+            total += 3 * A + B
 
     return int(total)
+
 
 def run(data: str) -> Solution:
     machines = parse_input(data)

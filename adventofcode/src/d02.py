@@ -5,17 +5,20 @@ Run it with the command `python -m adventofcode run_solution 2` from the project
 
 from adventofcode.types import Solution
 
+
 def is_decreasing(digits):
-    for idx in range(len(digits)-1):
+    for idx in range(len(digits) - 1):
         if int(digits[idx]) - int(digits[idx + 1]) < 0:
             return False
     return True
 
+
 def is_increasing(digits):
-    for idx in range(len(digits)-1):
+    for idx in range(len(digits) - 1):
         if int(digits[idx]) - int(digits[idx + 1]) > 0:
             return False
     return True
+
 
 def is_safe(digits):
     if not is_decreasing(digits) and not is_increasing(digits):
@@ -25,13 +28,14 @@ def is_safe(digits):
         if last_digit is None:
             last_digit = int(digit)
             continue
-        if abs(last_digit - int(digit)) not in range(1,4):
+        if abs(last_digit - int(digit)) not in range(1, 4):
             return False
         last_digit = int(digit)
     return True
 
+
 def damper(digits):
-    print("-"*40)
+    print("-" * 40)
     states = []
     print(digits)
     states.append(is_safe(digits))

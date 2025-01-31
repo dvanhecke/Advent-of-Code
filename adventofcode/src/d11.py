@@ -6,6 +6,7 @@ Run it with the command `python -m adventofcode run_solution 11` from the projec
 from adventofcode.types import Solution
 from collections import defaultdict
 
+
 def simulate_blinks(stones: list[int], blinks: int) -> int:
     stone_counts = defaultdict(int)
     for stone in stones:
@@ -24,12 +25,15 @@ def simulate_blinks(stones: list[int], blinks: int) -> int:
                 new_stone_counts[left] += count
                 new_stone_counts[right] += count
             else:
-                new_stone_counts[stone*2024] += count
+                new_stone_counts[stone * 2024] += count
         stone_counts = new_stone_counts
     return sum(stone_counts.values())
 
+
 def part2(stones):
     return simulate_blinks(stones, 75)
+
+
 def part1(stones):
     return simulate_blinks(stones, 25)
 

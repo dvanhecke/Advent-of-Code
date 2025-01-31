@@ -29,7 +29,12 @@ def find_regions(grid):
             # Check neighbors
             for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                 nx, ny = x + dx, y + dy
-                if 0 <= nx < rows and 0 <= ny < cols and not visited[nx][ny] and grid[nx][ny] == plant_type:
+                if (
+                    0 <= nx < rows
+                    and 0 <= ny < cols
+                    and not visited[nx][ny]
+                    and grid[nx][ny] == plant_type
+                ):
                     stack.append((nx, ny))
         return region_cells
 
@@ -43,12 +48,11 @@ def find_regions(grid):
     return regions
 
 
-
 def find_sides(region: set[tuple[int, int]]):
     # a dict that holds all region points at the edge of the region
     # for each possible x or y value
     # for each possible side (left = 0, right = 1, up = 2, down = 3)
-    sides:  dict[tuple[int, int], set[tuple[int, int]]] = defaultdict(set)
+    sides: dict[tuple[int, int], set[tuple[int, int]]] = defaultdict(set)
     # for all points in the region
     for x, y in region:
         # check all neighbours
@@ -85,8 +89,11 @@ def find_sides(region: set[tuple[int, int]]):
                 # and increase the side count
                 side_count += 1
     return side_count
-    
-def grow_section(x: int, y: int, section: set[tuple[int, int]], visited: set[tuple[int, int]]):
+
+
+def grow_section(
+    x: int, y: int, section: set[tuple[int, int]], visited: set[tuple[int, int]]
+):
     # normal bfs start from the current point
     stack: list[tuple[int, int]] = [(x, y)]
     # while there are points to visit
@@ -106,7 +113,10 @@ def grow_section(x: int, y: int, section: set[tuple[int, int]], visited: set[tup
             stack.append((new_x, new_y))
             visited.add((new_x, new_y))
 
-def expand_region(grid: list[list[str]], x: int, y: int, visited_points: set[tuple[int, int]]):
+
+def expand_region(
+    grid: list[list[str]], x: int, y: int, visited_points: set[tuple[int, int]]
+):
     # normal bfs start from the current point
     stack: list[tuple[int, int]] = [(x, y)]
     # later used to determine the number of sides
@@ -146,7 +156,10 @@ def calculate_area_and_perimeter(region, grid):
         # Check all 4 sides
         for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             nx, ny = x + dx, y + dy
-            if not (0 <= nx < len(grid) and 0 <= ny < len(grid[0])) or grid[nx][ny] != grid[x][y]:
+            if (
+                not (0 <= nx < len(grid) and 0 <= ny < len(grid[0]))
+                or grid[nx][ny] != grid[x][y]
+            ):
                 perimeter += 1
     return area, perimeter
 

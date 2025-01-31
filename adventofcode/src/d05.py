@@ -28,6 +28,7 @@ def sort(update, graph):
                 queue.append(neighbor)
     return sorted_update
 
+
 def check_order(update, graph):
     index = {page: i for i, page in enumerate(update)}
     for x in graph:
@@ -36,9 +37,17 @@ def check_order(update, graph):
                 return False
     return True
 
+
 def run(data: str) -> Solution:
-    ruleset = [tuple([int(i) for i in rule.split("|")]) for rule in data.split("\n\n")[0].split("\n")]
-    dataset = [[int(i) for i in line.split(",")] for line in data.split("\n\n")[1].split("\n") if line]
+    ruleset = [
+        tuple([int(i) for i in rule.split("|")])
+        for rule in data.split("\n\n")[0].split("\n")
+    ]
+    dataset = [
+        [int(i) for i in line.split(",")]
+        for line in data.split("\n\n")[1].split("\n")
+        if line
+    ]
     graph = defaultdict(list)
     for x, y in ruleset:
         graph[x].append(y)
@@ -46,8 +55,14 @@ def run(data: str) -> Solution:
     valid_updates = []
     invalid_updates = []
     for update in dataset:
-        valid_updates.append(update) if check_order(update, graph) else invalid_updates.append(update)
-    middle_sum = sum([update[len(update) // 2 ] for update in valid_updates])
+        (
+            valid_updates.append(update)
+            if check_order(update, graph)
+            else invalid_updates.append(update)
+        )
+    middle_sum = sum([update[len(update) // 2] for update in valid_updates])
     corrected_updates = [sort(update, graph) for update in invalid_updates]
-    middle_sum_corrected = sum([update[len(update) // 2 ] for update in corrected_updates])
+    middle_sum_corrected = sum(
+        [update[len(update) // 2] for update in corrected_updates]
+    )
     return (middle_sum, middle_sum_corrected)

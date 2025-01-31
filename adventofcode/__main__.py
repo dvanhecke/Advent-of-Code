@@ -1,5 +1,9 @@
 import argparse
-from adventofcode.constants import COMMAND_RUN_SOLUTION, COMMAND_MAKE_NEW_YEAR, COMMAND_RUN_PROFILER
+from adventofcode.constants import (
+    COMMAND_RUN_SOLUTION,
+    COMMAND_MAKE_NEW_YEAR,
+    COMMAND_RUN_PROFILER,
+)
 from adventofcode.run_solution import run_solution
 from adventofcode.run_make_new_year import run_make_new_year
 from adventofcode.run_profiler import run_profiler

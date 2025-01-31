@@ -8,6 +8,7 @@ import sys
 from heapq import heapify, heappop, heappush
 from itertools import repeat
 
+
 def part1(arr):
     disk = []
     is_file = True
@@ -41,6 +42,7 @@ def part1(arr):
 
     return checksum
 
+
 def part2(arr):
     MAX_FREE_SIZE = 10
 
@@ -69,7 +71,9 @@ def part2(arr):
         first_fit: int | None = None
 
         for free_size in range(file_size, MAX_FREE_SIZE):
-            if frees[free_size][0] < file_position and (first_fit is None or frees[free_size][0] < frees[first_fit][0]):
+            if frees[free_size][0] < file_position and (
+                first_fit is None or frees[free_size][0] < frees[first_fit][0]
+            ):
                 first_fit = free_size
 
         if first_fit is None:

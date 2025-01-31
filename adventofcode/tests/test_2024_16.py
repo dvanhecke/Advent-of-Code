@@ -7,5 +7,19 @@ from adventofcode.src.d16 import run
 
 
 def test_run(benchmark) -> None:
-    test_data = ""
-    assert benchmark(run, test_data) == (None, None)
+    test_data = """###############
+#.......#....E#
+#.#.###.#.###.#
+#.....#.#...#.#
+#.###.#####.#.#
+#.#.#.......#.#
+#.#.#####.###.#
+#...........#.#
+###.#.#####.#.#
+#...#.....#.#.#
+#.#.#.###.#.#.#
+#.....#...#.#.#
+#.###.#.#.#.#.#
+#S..#.....#...#
+###############"""
+    assert benchmark(run, test_data) == (7036, 45)
