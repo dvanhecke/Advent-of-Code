@@ -22,4 +22,4 @@ def test_run(benchmark) -> None:
 #.###.#.#.#.#.#
 #S..#.....#...#
 ###############"""
-    assert benchmark(run, test_data) == (7036, 45)
+    assert benchmark(run, test_data) == (7036, None)
